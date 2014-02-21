@@ -9,6 +9,8 @@
 #define ECHOPIN 2
 #define TOCM 29.1
 
+#define HOVER_RANGE 5
+
 Servo pitch_pin;
 Servo roll_pin;
 Servo throttle_pin;
@@ -38,6 +40,7 @@ int height = 0;
 int hover_set = 0;
 int altitude_threshold = 0;
 int hover_throttle = 0;
+int hover_adjust_mid = 0;
 
 void setup(){
     pitch_pin.attach(A1);
@@ -68,6 +71,7 @@ void loop()
     sendCommand ();
 }
     
+    
 void getHeight ()
 {
     int duration;
@@ -84,7 +88,7 @@ void getHeight ()
     //Serial.print(height);
     //Serial.println(" cm");
 
-    delay(5);
+    //delay(5);
 }
 
 
@@ -138,6 +142,7 @@ void mapInputs ()
         hover_set = 1;
         altitude_threshold = height;
         hover_throttle = throttle_input;
+        hover_adjust_mid = throttle_input;
     }
     else if (!hover_input && hover_set)
     {
@@ -153,23 +158,29 @@ void mapInputs ()
 }
 
 void hover ()
-{
+{  
     // altitude in cm
     if (height < altitude_threshold)
     {
-        //hover_throttle += 1;
-        throttle_input += 1;
-        if (throttle_input > 100) { throttle_input = 100; }
+        hover_throttle += 1;
+        if (hover_throttle > hover_adjust_mid + HOVER_RANGE) { hover_throttle = hover_adjust_mid + HOVER_RANGE; }
+        if (hover_throttle > 100) { hover_throttle = 100; }
+        
+        //throttle_input += 1;
+        //if (throttle_input > 100) { throttle_input = 100; }
     }
     else if (height > altitude_threshold)
     {
-        //hover_throttle -= 1;
-        throttle_input -= 1;
-        if (throttle_input < 0) { throttle_input = 0; }
+        hover_throttle -= 1;
+        if (hover_throttle < hover_adjust_mid - HOVER_RANGE) { hover_throttle = hover_adjust_mid - HOVER_RANGE; }
+        if (hover_throttle < 0) { hover_throttle = 0; }
+
+        //throttle_input -= 1;
+        //if (throttle_input < 0) { throttle_input = 0; }
 
     }
 
-    //throttle_input = hover_throttle;
+    throttle_input = hover_throttle;
 
 }
 
