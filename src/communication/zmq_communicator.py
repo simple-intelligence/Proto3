@@ -9,7 +9,7 @@ from debug_utils import debugging
 
 # Finds the root of the proto2 directory
 cwd = os.getcwd ().split ("/")
-proto2_base_path = "/".join (cwd[0:cwd.index ("proto2") + 1])
+proto_base_path = "/".join (cwd[0:cwd.index ("Proto3") + 1])
 
 class communicator ():
 	"""
@@ -48,7 +48,7 @@ class communicator ():
 		# Gettings settings from settings file
 		if not settings_file:
 			try:
-				self.settings = json.load (open (proto2_base_path + "/src/communication/Communication_Settings.json", "r"))
+				self.settings = json.load (open (proto_base_path + "/src/communication/Communication_Settings.json", "r"))
 			except:
 				self.debug.print_d ("Communication_Settings.json is not in json format!")
 				sys.exit ()

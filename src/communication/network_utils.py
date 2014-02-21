@@ -12,7 +12,7 @@ from zmq_communicator import communicator
 
 # Finds the root of the proto2 directory
 cwd = os.getcwd ().split ("/")
-proto2_base_path = "/".join (cwd[0:cwd.index ("proto2") + 1])
+proto_base_path = "/".join (cwd[0:cwd.index ("Proto3") + 1])
 
 class passive_pinger (threading.Thread):
     def __init__(self, communicator, _ping_threshold=5, _ping_frequency=1):
@@ -63,7 +63,7 @@ class video_server:
         # Gettings settings from settings file
         if not settings_file:
             try:
-                self.settings = json.load (open (proto2_base_path + "/src/communication/Video_Settings.json", "r"))
+                self.settings = json.load (open (proto_base_path + "/src/communication/Video_Settings.json", "r"))
             except:
                 self.debug.print_d ("Video_Settings.json is not in json format!")
                 sys.exit ()
@@ -134,7 +134,7 @@ class video_reciever:
         # Gettings settings from settings file
         if not settings_file:
             try:
-                self.settings = json.load (open (proto2_base_path + "/src/communication/Video_Settings.json", "r"))
+                self.settings = json.load (open (proto_base_path + "/src/communication/Video_Settings.json", "r"))
             except:
                 self.debug.print_d ("Video_settings.json is not in json format!")
                 sys.exit ()
