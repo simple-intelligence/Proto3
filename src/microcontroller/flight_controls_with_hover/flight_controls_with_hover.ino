@@ -7,9 +7,9 @@
 
 #define TRIGPIN 3
 #define ECHOPIN 2
-#define TOCM 29.1
+#define TOCM 27.623
 
-#define HOVER_RANGE 5
+#define HOVER_RANGE 15
 
 Servo pitch_pin;
 Servo roll_pin;
@@ -36,11 +36,13 @@ int COPTER_ARMED = 0;
 int STABALIZED = 0;
 
 // For hover
-int height = 0;
+float height = 0;
 int hover_set = 0;
-int altitude_threshold = 0;
+int altitude_threshold = 122;
 int hover_throttle = 0;
 int hover_adjust_mid = 0;
+double time = 0;
+double last_time = 0;
 
 void setup(){
     pitch_pin.attach(A1);
@@ -59,7 +61,6 @@ void setup(){
     Serial.begin(9600);
 }
 
-
 void loop()
 {
     parseSerial ();
@@ -70,27 +71,31 @@ void loop()
 
     sendCommand ();
 }
-    
-    
+        
 void getHeight ()
 {
     int duration;
+    time = millis ();
 
-    digitalWrite(TRIGPIN, LOW);
-    delayMicroseconds(2);
-    digitalWrite(TRIGPIN, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIGPIN, LOW);
+    if ((time - last_time) >= 60)
+    {
+        digitalWrite(TRIGPIN, LOW);
+        delayMicroseconds(2);
+        digitalWrite(TRIGPIN, HIGH);
+        delayMicroseconds(10);
+        digitalWrite(TRIGPIN, LOW);
 
-    duration = pulseIn (ECHOPIN, HIGH);
-    height = (duration/2) / TOCM;
-
-    //Serial.print(height);
-    //Serial.println(" cm");
-
-    //delay(5);
+        duration = pulseIn (ECHOPIN, HIGH);
+        height = (duration/2.0) / TOCM;
+        
+        Serial.print(height);
+        Serial.println(" cm");
+        
+        if (height > 400 ) { height = 400; }
+        
+        last_time = time;
+    }
 }
-
 
 void startStabalizer ()
 {
@@ -140,7 +145,7 @@ void mapInputs ()
     {
         // Step 1: read current height
         hover_set = 1;
-        altitude_threshold = height;
+        //altitude_threshold = height;
         hover_throttle = throttle_input;
         hover_adjust_mid = throttle_input;
     }
@@ -163,8 +168,8 @@ void hover ()
     if (height < altitude_threshold)
     {
         hover_throttle += 1;
-        if (hover_throttle > hover_adjust_mid + HOVER_RANGE) { hover_throttle = hover_adjust_mid + HOVER_RANGE; }
-        if (hover_throttle > 100) { hover_throttle = 100; }
+        //if (hover_throttle > hover_adjust_mid + HOVER_RANGE) { hover_throttle = hover_adjust_mid + HOVER_RANGE; }
+        if (hover_throttle > 60) { hover_throttle = 60; }
         
         //throttle_input += 1;
         //if (throttle_input > 100) { throttle_input = 100; }
@@ -172,8 +177,8 @@ void hover ()
     else if (height > altitude_threshold)
     {
         hover_throttle -= 1;
-        if (hover_throttle < hover_adjust_mid - HOVER_RANGE) { hover_throttle = hover_adjust_mid - HOVER_RANGE; }
-        if (hover_throttle < 0) { hover_throttle = 0; }
+        //if (hover_throttle < hover_adjust_mid - HOVER_RANGE) { hover_throttle = hover_adjust_mid - HOVER_RANGE; }
+        if (hover_throttle < 20) { hover_throttle = 20; }
 
         //throttle_input -= 1;
         //if (throttle_input < 0) { throttle_input = 0; }
