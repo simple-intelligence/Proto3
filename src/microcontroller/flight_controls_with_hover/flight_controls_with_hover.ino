@@ -44,11 +44,19 @@ int hover_adjust_mid = 0;
 double time = 0;
 double last_time = 0;
 
-void setup(){
-    pitch_pin.attach(A1);
+// For quick PID control
+int PID = 1;
+float kP = 1.0 / 8.0;
+float setpoint = 0;
+float error = 0;
+float P = 0;
+
+void setup()
+{
+    pitch_pin.attach(A2);
     roll_pin.attach(A4);
     throttle_pin.attach(A3);
-    yaw_pin.attach(A2);
+    yaw_pin.attach(A1);
     stabalizer.attach (A0);
       
     // For the range sensor
@@ -88,10 +96,11 @@ void getHeight ()
         duration = pulseIn (ECHOPIN, HIGH);
         height = (duration/2.0) / TOCM;
         
-        Serial.print(height);
-        Serial.println(" cm");
+        //Serial.print(height);
+        //Serial.println(" cm");
         
-        if (height > 400 ) { height = 400; }
+        //if (height > 400 ) { height = 400; }
+        if (height > 250 ) { height = 250; }
         
         last_time = time;
     }
@@ -164,29 +173,56 @@ void mapInputs ()
 
 void hover ()
 {  
+    // Possible TODO: Implement basic PID controller here
     // altitude in cm
-    if (height < altitude_threshold)
+
+    if (!PID)
     {
-        hover_throttle += 1;
-        //if (hover_throttle > hover_adjust_mid + HOVER_RANGE) { hover_throttle = hover_adjust_mid + HOVER_RANGE; }
-        if (hover_throttle > 60) { hover_throttle = 60; }
+        if (height < altitude_threshold)
+        {
+            hover_throttle += 1;
+            //if (hover_throttle > hover_adjust_mid + HOVER_RANGE) { hover_throttle = hover_adjust_mid + HOVER_RANGE; }
+            if (hover_throttle > 60) { hover_throttle = 60; }
+            
+            //throttle_input += 1;
+            //if (throttle_input > 100) { throttle_input = 100; }
+        }
+        else if (height > altitude_threshold)
+        {
+            hover_throttle -= 1;
+            //if (hover_throttle < hover_adjust_mid - HOVER_RANGE) { hover_throttle = hover_adjust_mid - HOVER_RANGE; }
+            if (hover_throttle < 20) { hover_throttle = 20; }
+
+            //throttle_input -= 1;
+            //if (throttle_input < 0) { throttle_input = 0; }
+
+        }
+
+        throttle_input = hover_throttle;
+    }
+
+    // This is just for testing for now
+    else if (PID)
+    {
+        setpoint = altitude_threshold;
+        error = setpoint - height;
+
+        P = error * kP;
+
+        //Serial.print("P: ");
+        //Serial.println(P);
         
-        //throttle_input += 1;
-        //if (throttle_input > 100) { throttle_input = 100; }
+        hover_throttle = 30.5 + P;
+
+        if (hover_throttle < 15) { hover_throttle = 15; }
+        if (hover_throttle > 80) { hover_throttle = 80; }
+
+        throttle_input = hover_throttle;
     }
-    else if (height > altitude_threshold)
+    else
     {
-        hover_throttle -= 1;
-        //if (hover_throttle < hover_adjust_mid - HOVER_RANGE) { hover_throttle = hover_adjust_mid - HOVER_RANGE; }
-        if (hover_throttle < 20) { hover_throttle = 20; }
-
-        //throttle_input -= 1;
-        //if (throttle_input < 0) { throttle_input = 0; }
-
+        throttle_input = hover_throttle;
     }
-
-    throttle_input = hover_throttle;
-
 }
 
 void resetOutputs ()
