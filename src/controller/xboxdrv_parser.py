@@ -4,12 +4,40 @@ import threading
 from time import sleep
 
 class Controller:
-    class Parser (threading.Thread):
+        """
+        Gets input from a controller recognized by xboxdrv.
+
+        Parameters
+        ----------
+        return_values: list, optional
+            Values to return from the controller. use get_input_names()
+            to get the names of these values.
+        return_as: list, optional
+            Names to return the input values as. it must be the same length 
+            as return_values
+        in_range: tuple, optional
+            Range in the format (min, max) where min is the lowest incoming value and max
+            the greatest
+        out_range: tuple, optional
+            Range in the format (min, max) where min is the lowest desired outgoing value and max
+            the greatest
+
+        Returns
+        -------
+        controller_outputs: dict
+            Dict with an entry for each button specified on the controller.
+
+        NOTE:
+        return_values may be present while return_as can still be none, however, in_range and out_range must both exist
+        """
+
+    class __parser__ (threading.Thread):
         def __init__(self, _xboxdrv_process):
             """
-            Parser parses the input from xboxdrv. It runs as a seperate thread to prevent
+            Parses the input from xboxdrv. It runs as a seperate thread to prevent
             stale data when get_values() is called
             """
+
             threading.Thread.__init__(self)
         
             self.xboxdrv = _xboxdrv_process
@@ -28,6 +56,7 @@ class Controller:
                     This method removes all spaces after a ":" but does not affect the spaces after the numerical
                     value of an input.
                     """
+
                     line = line.replace (":      ", ":     ")
                     line = line.replace (":     ",  ":    ")
                     line = line.replace (":    ",   ":   ")
@@ -50,24 +79,6 @@ class Controller:
                     pass
 
     def __init__(self, return_values=None, return_as=None, in_range=None, out_range=None):
-        """
-        Controller() is a class for getting input values from an xbox/playstation or other controller
-        recognized by the program xboxdrv. By default Controller returns values for every button on the 
-        controller as a dictionary.
-
-        Optional Parameters:
-        return_values is an optional list of the values to return from the controller. use get_input_names()
-            to get the names of these values.
-        return_as is an optional list of names to return the input values as. it must be the same length 
-            as return_values
-        in_range is an optional tuple in the format (min, max) where min is the lowest incoming value and max
-            the greatest
-        out_range is an optional tuple in the format (min, max) where min is the lowest desired outgoing value and max
-            the greatest
-
-        Note:
-        return_values may be present while return_as can still be none, however, in_range and out_range must both exist
-        """
         if return_values and return_as:
             if not len (return_values) == len (return_as):
                 sys.exit ("return_values and return_as must be the same length!")
@@ -90,7 +101,7 @@ class Controller:
         # This waits for password input
         sleep (2)
 
-        self.line_parser = self.Parser (controller)
+        self.line_parser = self.__parser__ (controller)
         self.line_parser.daemon = True
         self.line_parser.start ()
 
@@ -98,10 +109,25 @@ class Controller:
 
     def map_range (self, x, in_min, in_max, out_min, out_max):
         """
-        map_range() maps the inputs values ranging from in_min to in_max to output values
-        ranging from out_min to out_max. This can handle both negative and positive
-        min and max values
+        Maps an input with a specified input range to a specified output range
+
+        Parameters
+        ----------
+        in_min: float, int,  
+            Minimum of input range
+        in_max: float, int,  
+            Maximum of input range
+        out_min: float, int,  
+            Minimun of output range
+        out_max: float, int,  
+            Maximum of output range
+
+        Returns
+        -------
+        out: float
+            Scaled input value
         """
+
         x = float (x)
         in_min = float (in_min)
         in_max = float (in_max)
@@ -111,7 +137,16 @@ class Controller:
 
     def get_input_names (self):
         """
-        get_input_names() returns a list of the names of all the values coming from xboxdrv.
+        Gets a list of the names of all the values coming from xboxdrv.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        input_names: list
+            The names of each value as xboxdrv sees it
         """
         #TODO: this could fail if the parser catches a line from the info text that xboxdrv puts out
         while not self.line_parser.control_inputs:
@@ -124,9 +159,18 @@ class Controller:
 
     def get_values (self):
         """
-        get_values() returns the values specified by the caller or 
-        all the values if no values specified
+        Returns the values specified by the caller or all the values if no values specified
+
+        Parameters
+        ----------
+        None
+    
+        Returns
+        -------
+        controller_outputs: dict
+            Dict with an entry for each button specified on the controller.
         """
+
         self.outputs = {}
 
         # Changes return values names to specified names
