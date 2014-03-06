@@ -62,14 +62,15 @@ while True:
         msg = msg.split (":")
 
         accel_msg = msg[0].split (",")
-        accel.x = float (accel_msg[0])
-        accel.y = float (accel_msg[1])
-        accel.z = float (accel_msg[2])
+        accel.x = -float (accel_msg[0]) / (512 / 16)
+        accel.y = float (accel_msg[1]) / (512 / 16)
+        accel.z = -float (accel_msg[2]) / (512 / 16)
 
-        gyro_msg = msg[1].split (",")
-        gyro.x = float (gyro_msg[0])
-        gyro.y = float (gyro_msg[1])
-        gyro.z = float (gyro_msg[2])
+
+        gyro_msg = msg[2].split (",")
+        gyro.x = float (gyro_msg[0]) / 14.375
+        gyro.y = float (gyro_msg[1]) / 14.375
+        gyro.z = float (gyro_msg[2]) / 14.375
 
         # Storing Raw Data
         accel_x.append (accel.x)
@@ -80,11 +81,14 @@ while True:
         gyro_y.append (gyro.y)
         gyro_z.append (gyro.z)
 
-        acc_pitch = atan2 (accel.x, -accel.z)
-        acc_roll = -atan2 (accel.y, -accel.z)
+        acc_pitch = atan2 (accel.x, accel.z)
+        acc_roll = atan2 (accel.y, accel.z)
+
+        #print acc_pitch
+        #print acc_roll
         
-        pitch_record_raw.append (acc_pitch * (180/3.1415))
-        roll_record_raw.append (acc_roll * (180/3.1415))
+        pitch_record_raw.append (acc_pitch)
+        roll_record_raw.append (acc_roll)
 
         # Start filtering here
         Z_pitch = np.mat ( ([acc_pitch],
@@ -93,14 +97,20 @@ while True:
         Z_roll = np.mat ( ([acc_roll],
                             [gyro.y]) )
 
-        pitch = float (pitch_filt.compute (Z_pitch, u)[0][0])
-        roll = float (roll_filt.compute (Z_roll, u)[0][0])
+        #pitch = float (pitch_filt.compute (Z_pitch, u)[0][0])
+        #roll = float (roll_filt.compute (Z_roll, u)[0][0])
+
+        pitch = float (pitch_filt.compute (Z_pitch, u)[0])
+        roll = float (roll_filt.compute (Z_roll, u)[0])
 
         # Storing filtered data
         pitch_record.append (pitch)
         roll_record.append (roll)
         
         sleep (.01)
+
+    except ValueError or KeyError:
+        pass
 
     except KeyboardInterrupt:
         ser.close ()
