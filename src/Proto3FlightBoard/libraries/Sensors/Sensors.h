@@ -60,3 +60,5 @@ public:
     void set_trig_pin (int pin);
     void set_echo_pin (int pin);
 };
+
+#endif

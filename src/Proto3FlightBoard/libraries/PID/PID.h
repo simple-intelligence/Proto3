@@ -30,3 +30,5 @@ public:
     float get_D ();
     void set_Setpoint (float new_setpoint);
 };
+
+#endif
