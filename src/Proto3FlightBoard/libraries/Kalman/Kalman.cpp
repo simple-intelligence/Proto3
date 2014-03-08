@@ -1,6 +1,7 @@
 #include "Kalman.h"
+#include <Arduino.h>
 
-Kalman ()
+Kalman::Kalman ()
 {
     float x1 = 0.0f;
     float x2 = 0.0f;
@@ -45,7 +46,7 @@ Kalman ()
     float r2 = R2;
 }
 
-void kalman_compute (float z1, float z2)
+void Kalman::kalman_compute (float z1, float z2)
 {
     // Step 1
     x1 = x1 + DT*x2 - DT*x3;

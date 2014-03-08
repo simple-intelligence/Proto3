@@ -1,6 +1,7 @@
+#include <Arduino.h>
 #include "PID.h"
 
-PID (float kP, float kI, float kD, float Min_Integrator, float Max_Integrator, float Setpoint)
+PID::PID (float kP, float kI, float kD, float Min_Integrator, float Max_Integrator, float Setpoint)
 {
     _kP = kP;
     _kI = kI;
@@ -18,7 +19,7 @@ PID (float kP, float kI, float kD, float Min_Integrator, float Max_Integrator, f
     _D = 0;
 }
 
-void Compute (float Actual)
+void PID::Compute (float Actual)
 {
     float _Error = _Setpoint - Actual;
 
@@ -33,23 +34,25 @@ void Compute (float Actual)
     _Derivator = _Error;
 }
 
-float get_P ()
+float PID::get_P ()
 {
     return _P;
 }
 
-void get_I ()
+void PID::get_I ()
 {
     return _I;
 }
 
-void get_D ()
+void PID::get_D ()
 {
     return _D;
 }
 
-void set_Setpoint (float new_setpoint)
+void PID::set_Setpoint (float new_setpoint)
 {
     _Setpoint = new_setpoint;
+    _Derivator = 0;
+    _Integrator = 0;
 }
 

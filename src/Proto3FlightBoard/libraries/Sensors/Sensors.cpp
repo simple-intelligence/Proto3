@@ -25,7 +25,7 @@ void Sensors::init_sensors()
     range = 0.0f;
 }
 
-void read_sensors()
+void Sensors::read_sensors()
 {
     read_accel();
     read_mag();

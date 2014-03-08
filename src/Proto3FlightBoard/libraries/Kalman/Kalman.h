@@ -1,6 +1,8 @@
 #ifndef KALMAN
 #define KALMAN
 
+#include <Arduino.h>
+
 #define DT 0.01f
 
 // Tuning Variables

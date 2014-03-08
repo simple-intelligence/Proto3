@@ -1,28 +1,29 @@
 #include "Logger.h"
+#include <Arduino.h>
 
-Logger(int logger_rate, bool logger_on)
+Logger::Logger(int logger_rate, bool logger_on)
 {
     Logger_Rate = logger_rate;
     Logger_On = Logger_On;
 }
 
-void Log_Int (int data)
+void Logger::Log_Int (int data)
 {
 
 }
 
-void Log_Float (float data)
+void Logger::Log_Float (float data)
 {
 
 }
 
-void Log_On (bool status)
+void Logger::Set_Log_On ()
 {
-
+   Logger_On = true;
 }
 
-void Log_Off (bool status)
+void Logger::Set_Log_Off ()
 {
-
+   Logger_On = false
 }
 

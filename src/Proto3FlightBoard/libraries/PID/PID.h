@@ -1,6 +1,8 @@
 #ifndef PID
 #define PID
 
+#include <Arduino.h>
+
 class PID
 {
 private:
