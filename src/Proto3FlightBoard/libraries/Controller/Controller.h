@@ -6,7 +6,7 @@
 class Controller
 {
 private:
-    bool Message_Recieved;
+    int Message_Recieved;
     
 public:
     int Pitch_Input;

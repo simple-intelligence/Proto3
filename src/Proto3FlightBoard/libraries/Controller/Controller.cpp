@@ -29,10 +29,10 @@ void Controller::Parse_Serial ()
         Arm_Input = Serial.parseInt();
         //Hover_Input = Serial.parseInt();
 
-        Message_Recieved = true;
+        Message_Recieved = 1;
         return;
     }
     else
-        Message_Recieved = false;
+        Message_Recieved = 0;
         return;
 }
