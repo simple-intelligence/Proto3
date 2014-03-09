@@ -1,24 +1,26 @@
+#include <Arduino.h>
 #include <Wire.h>
 #include "Sensors.h"
 
-Sensors::Sensors (int trig_pin, int echo_pin)
+Sensors::Sensors (int trig_pin_, int echo_pin_)
 {
-    Wire.begin();
+    //Wire.begin();
 
-    for(int i = 0; i < 3; ++i) 
+    for(int i = 0; i < 3; i++) 
     {
-        raw_accel_data[i] = raw_mag_data[i] = raw_gyro_data[i] = 0;
-        calibrated_accel_data[i] = calibrated_gyro_data[i] = calibrated_mag_data[i] = 0;
+        raw_accel_data[i] = raw_mag_data[i] = raw_gyro_data[i] = 1;
+        calibrated_accel_data[i] = calibrated_gyro_data[i] = calibrated_mag_data[i] = 1;
     }
 
-    set_trig_pin (trig_pin);
-    set_echo_pin (echo_pin);
-    pinMode(trig_pin, OUTPUT);
-    pinMode(echo_pin, INPUT);
+    trig_pin = trig_pin_;
+    echo_pin = echo_pin_;
 }
 
 void Sensors::init_sensors()
 {
+    pinMode(trig_pin, OUTPUT);
+    pinMode(echo_pin, INPUT);
+
     init_accel();
     init_mag();
     init_gyro();
@@ -30,7 +32,7 @@ void Sensors::read_sensors()
     read_accel();
     read_mag();
     read_gyro();
-    read_range();
+    //read_range();
 }
 
 void Sensors::i2c_write(int address, byte reg, byte data) 
@@ -50,6 +52,7 @@ void Sensors::i2c_read(int address, byte reg, int count, byte* data)
     Wire.endTransmission();
     Wire.beginTransmission(address);
     Wire.requestFrom(address,count);
+    Serial.print ("Grabbing Data!\n");
     while(Wire.available())
     {
         c = Wire.read();
@@ -78,7 +81,7 @@ void Sensors::read_accel()
 
     for (int i=0;i<3;++i) 
     {
-        accelerometer_data[i] = (int16_t)bytes[2*i] + (((int16_t)bytes[2*i + 1]) << 8);
+        raw_accel_data[i] = (int16_t)bytes[2*i] + (((int16_t)bytes[2*i + 1]) << 8);
     }
 }
 
@@ -101,7 +104,7 @@ void Sensors::read_gyro()
     i2c_read(GYRO_ADDRESS, GYRO_REGISTER_XMSB, 6, bytes);
     for (int i=0;i<3;++i) 
     {
-        gyro_data[i] = (int16_t)bytes[2*i + 1] + (((int16_t)bytes[2*i]) << 8);
+        raw_gyro_data[i] = (int16_t)bytes[2*i + 1] + (((int16_t)bytes[2*i]) << 8);
     }
 }
 
@@ -109,7 +112,7 @@ void Sensors::init_mag()
 {
     byte data = 0;
 
-    i2c_write(MAG_ADDRESS, MAG_REGISTER_MEASUREMODE, MAG_MEASMODE_CONT);
+    i2c_write(MAG_ADDRESS, MAG_REGISTER_MEASUREMODE, MAG_MEASUREMODE_CONT);
 
     i2c_read(MAG_ADDRESS, MAG_REGISTER_MEASUREMODE, 1, &data);
     //Serial.println((unsigned int)data);
@@ -124,7 +127,7 @@ void Sensors::read_mag()
 
     for (int i=0;i<3;++i) 
     {
-        magnetometer_data[i] = (int16_t)bytes[2*i + 1] + (((int16_t)bytes[2*i]) << 8);
+        raw_mag_data[i] = (int16_t)bytes[2*i + 1] + (((int16_t)bytes[2*i]) << 8);
     }
 }
 
@@ -132,21 +135,21 @@ void Sensors::read_range()
 {
     int duration;
 
-    time = millis();
+    last_time = millis();
 
-    if ((time - range_timer) > 60)
+    if ((last_time - range_timer) > 60)
     {
 
-        digitalWrite(TRIGPIN, LOW);
+        digitalWrite(trig_pin, LOW);
         delayMicroseconds(2);
-        digitalWrite(TRIGPIN, HIGH);
+        digitalWrite(trig_pin, HIGH);
         delayMicroseconds(10);
-        digitalWrite(TRIGPIN, LOW);
+        digitalWrite(trig_pin, LOW);
 
-        duration = pulseIn(ECHOPIN, HIGH);
-        range = duration / TOCM
+        duration = pulseIn(echo_pin, HIGH);
+        range = duration / TOCM;
 
-        range_timer = time;
+        range_timer = last_time;
     }
 }
 

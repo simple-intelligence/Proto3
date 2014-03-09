@@ -1,7 +1,7 @@
 #ifndef SENSORS
 #define SENSORS
 
-#include <Wire.h>
+#include <Arduino.h>
 
 /*
 Input ranges from -512 to 512 (10 bits)
@@ -32,6 +32,7 @@ private:
     int echo_pin;
     int trig_pin;
     float range_timer;
+    float last_time;
 
 public:
     int16_t calibrated_accel_data[3];

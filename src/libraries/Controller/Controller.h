@@ -5,10 +5,8 @@
 
 class Controller
 {
-private:
-    int Message_Recieved;
-    
 public:
+    int Message_Recieved;
     int Pitch_Input;
     int Roll_Input;
     int Throttle_Input;

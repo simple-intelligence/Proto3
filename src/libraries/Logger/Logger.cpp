@@ -1,5 +1,5 @@
-#include "Logger.h"
 #include <Arduino.h>
+#include "Logger.h"
 
 Logger::Logger(int logger_rate, int logger_on)
 {
@@ -42,5 +42,5 @@ void Logger::Set_Log_On ()
 
 void Logger::Set_Log_Off ()
 {
-    Logger_On = false
+    Logger_On = false;
 }

@@ -1,6 +1,5 @@
-#include "Motors.h"
-#include <Servo.h>
 #include <Arduino.h>
+#include "Motors.h"
 
 Motor_Control::Motor_Control (int Min_Pwm, int Max_Pwm)
 {

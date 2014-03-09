@@ -7,12 +7,12 @@
 
 // Tuning Variables
 #define BROWNYODA 1
-#define Q1
-#define Q2
-#define Q3
+#define Q1 5.0f
+#define Q2 100.0f
+#define Q3 0.01f
 
-#define R1
-#define R2
+#define R1 1000.0f
+#define R2 1000.0f
 
 class Kalman
 {
@@ -61,7 +61,7 @@ public:
     float x3;    
 
     Kalman ();
-    void kalman_compute (float z1, float z2);
+    void compute (float z1, float z2);
 };
 
 #endif

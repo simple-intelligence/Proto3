@@ -8,7 +8,7 @@ class Motor_Control
 {
 private:
     int MIN_PWM;
-    int ZERO_PWM;
+    int MID_PWM;
     int MAX_PWM;
 
     int Front_Left_Output;
@@ -21,19 +21,19 @@ private:
     float Yaw_Input;
     float Throttle_Input;
 
-    Servo Pitch_Pin;
-    Servo Roll_Pin;
-    Servo Throttle_Pin;
-    Servo Yaw_Pin;
+    Servo Front_Left_Pin;
+    Servo Front_Right_Pin;
+    Servo Back_Left_Pin;
+    Servo Back_Right_Pin;
 
     void Map_Motor_Inputs ();
 
 public:
-    Motor_Control ();
+    Motor_Control (int Min_Pwm, int Max_Pwm);
 
-    void Set_Motor_Range ();
+    void Set_Motor_Range (int Min_Pwm, int Max_Pwm);
 
-    void Motor_Inputs (float Throttle, float Pitch, float Roll, float Yaw)
+    void Set_Motor_Inputs (float Throttle, float Pitch, float Roll, float Yaw);
     void Write_Motor_Out ();
 };
 
