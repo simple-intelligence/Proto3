@@ -3,17 +3,6 @@
 
 #include <Arduino.h>
 
-#define DT 0.01f
-
-// Tuning Variables
-#define BROWNYODA 1
-#define Q1 5.0f
-#define Q2 100.0f
-#define Q3 0.01f
-
-#define R1 1000.0f
-#define R2 1000.0f
-
 class Kalman
 {
 private:
@@ -26,6 +15,16 @@ private:
     float p31;
     float p32;
     float p33;
+
+    float p11_temp;
+    float p12_temp;
+    float p13_temp;
+    float p21_temp;
+    float p22_temp;
+    float p23_temp;
+    float p31_temp;
+    float p32_temp;
+    float p33_temp;
 
     float y1;
     float y2;
@@ -54,13 +53,15 @@ private:
 
     float r1;
     float r2;
+    
+    float DT;
 
 public:
     float x1;    
     float x2;    
     float x3;    
 
-    Kalman ();
+    Kalman (float dt);
     void compute (float z1, float z2);
 };
 

@@ -33,6 +33,7 @@ void Sensors::read_sensors()
     read_mag();
     read_gyro();
     //read_range();
+    //Serial.print ("Grabbing Data!\n");
 }
 
 void Sensors::i2c_write(int address, byte reg, byte data) 
@@ -52,7 +53,6 @@ void Sensors::i2c_read(int address, byte reg, int count, byte* data)
     Wire.endTransmission();
     Wire.beginTransmission(address);
     Wire.requestFrom(address,count);
-    Serial.print ("Grabbing Data!\n");
     while(Wire.available())
     {
         c = Wire.read();

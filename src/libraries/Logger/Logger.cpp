@@ -4,7 +4,7 @@
 Logger::Logger(int logger_rate, int logger_on)
 {
     Logger_Rate = logger_rate;
-    Logger_On = Logger_On;
+    Logger_On = logger_on;
     Log_Counter = 0;
 }
 
@@ -20,27 +20,27 @@ void Logger::Count ()
 void Logger::Log_Int (int data)
 {
     Serial.print (data);
-    Serial.print (" ");
+    Serial.print (":");
 }
 
 void Logger::Log_Float (float data)
 {
-    Serial.print ((int)data);
-    Serial.print (" ");
+    Serial.print (data);
+    Serial.print (":");
 }
 
 void Logger::End_Line ()
 {
-    Serial.println ();
+    Serial.print ("\n");
 }
 
 
 void Logger::Set_Log_On ()
 {
-    Logger_On = true;
+    Logger_On = 1;
 }
 
 void Logger::Set_Log_Off ()
 {
-    Logger_On = false;
+    Logger_On = 0;
 }
