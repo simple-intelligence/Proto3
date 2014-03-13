@@ -64,18 +64,18 @@ void Kalman::compute (float z1, float z2)
     x1 = x1 + DT*x2 - DT*x3;
 
     // Step 2
-    a = p11_temp + DT*p21 - DT*p31;
-    b = p12_temp + DT*p22 - DT*p32;
-    c = p13_temp + DT*p23 - DT*p33;
+    a = p11 + DT*p21 - DT*p31;
+    b = p12 + DT*p22 - DT*p32;
+    c = p13 + DT*p23 - DT*p33;
     p11 = a + DT*b - DT*c + q1;
     p12 = b;
     p13 = c;
 
-    p21 = p21_temp + DT*p22 - DT*p23;
-    p22 = p22_temp + q2;
+    p21 = p21 + DT*p22 - DT*p23;
+    p22 = p22 + q2;
 
-    p31 = p31_temp + DT*p32 - DT*p33;
-    p33 = p33_temp + q3;
+    p31 = p31 + DT*p32 - DT*p33;
+    p33 = p33 + q3;
 
     // Step 3
     y1 = z1 - x1;

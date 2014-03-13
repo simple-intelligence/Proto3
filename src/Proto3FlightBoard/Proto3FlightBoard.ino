@@ -20,8 +20,8 @@ Sensors Sensor_Data (12, 13);
 Kalman Pitch_Kalman (.01);
 Kalman Roll_Kalman (.01);
 
-PID_Class Pitch_PID (0.1, 0.1, 0.1, -20.0, 20.0, 0.0);
-PID_Class Roll_PID (0.1, 0.1, 0.1, -20.0, 20.0, 0.0);
+PID_Class Pitch_PID (5, 1.0, 0.0, -20.0, 20.0, 0.0);
+PID_Class Roll_PID (5, 1.0, 0.0, -20.0, 20.0, 0.0);
 PID_Class Throttle_PID (0.1, 0.1, 0.1, -20.0, 20.0, 0.0);
 
 Controller Controls;
@@ -57,15 +57,19 @@ void loop ()
     Raw_Pitch_Angle = atan_2 ((float)Sensor_Data.raw_accel_data[0], (float)Sensor_Data.raw_accel_data[2]);
     Raw_Roll_Angle = atan_2 ((float)Sensor_Data.raw_accel_data[1], (float)Sensor_Data.raw_accel_data[2]);
     
-    Pitch_Kalman.compute (Raw_Pitch_Angle, (float)Sensor_Data.raw_gyro_data[1] / 14.375);
-    Roll_Kalman.compute (Raw_Roll_Angle, (float)Sensor_Data.raw_gyro_data[0] / 14.375);
+    //Pitch_Kalman.compute (Raw_Pitch_Angle, (float)Sensor_Data.raw_gyro_data[1] / 14.375);
+    //Roll_Kalman.compute (Raw_Roll_Angle, (float)Sensor_Data.raw_gyro_data[0] / 14.375);
 
-    //if (!Controls.Message_Recieved)
-    //{
+    if (!Controls.Message_Recieved)
+    {
         //Pitch_PID.compute (Pitch_Kalman.x1);
         //Roll_PID.compute (Roll_Kalman.x1);
         //Throttle_PID.compute (Sensor_Data.range);
-    //}
+
+        // Bypassing Kalman for testing
+        Pitch_PID.compute (Raw_Pitch_Angle);
+        Roll_PID.compute (Raw_Roll_Angle);
+    }
     
     //Controls.Parse_Serial ();
 
@@ -92,8 +96,8 @@ void loop ()
         Logging.Log_Float (Raw_Pitch_Angle * 64.0);
         Logging.Log_Float (Raw_Roll_Angle * 64.0);
         
-        Logging.Log_Float (Pitch_Kalman.x1 * 64.0);
-        Logging.Log_Float (Roll_Kalman.x1 * 64.0);
+        //Logging.Log_Float (Pitch_Kalman.x1 * 64.0);
+        //Logging.Log_Float (Roll_Kalman.x1 * 64.0);
         
         //Logging.Log_Float (Sensor_Data.range);
         
@@ -102,8 +106,8 @@ void loop ()
         //Logging.Log_Int (Sensor_Data.raw_gyro_data[2] / 14.375);
 
         //Logging.Log_Float (Throttle_PID.Drive);
-        //Logging.Log_Float (Pitch_PID.Drive);
-        //Logging.Log_Float (Roll_PID.Drive);
+        Logging.Log_Float (Pitch_PID.Drive);
+        Logging.Log_Float (Roll_PID.Drive);
 
         //Logging.Log_Int (Controls.Throttle_Input);
         //Logging.Log_Int (Controls.Pitch_Input);

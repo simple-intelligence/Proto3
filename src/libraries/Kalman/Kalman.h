@@ -56,10 +56,11 @@ private:
     
     float DT;
 
-public:
-    float x1;    
     float x2;    
     float x3;    
+
+public:
+    float x1;    
 
     Kalman (float dt);
     void compute (float z1, float z2);
