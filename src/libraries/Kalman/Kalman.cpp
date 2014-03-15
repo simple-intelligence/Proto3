@@ -50,12 +50,12 @@ Kalman::Kalman (float dt)
     k31 = 0.0;
     k32 = 0.0;
 
-    q1 = 5.0;
-    q2 = 100.0;
+    q1 = .50;
+    q2 = 10.0;
     q3 = 0.01;
 
-    r1 = 1000.0;
-    r2 = 1000.0;
+    r1 = 1.0;
+    r2 = 1.0;
 }
 
 void Kalman::compute (float z1, float z2)

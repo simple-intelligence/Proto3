@@ -4,16 +4,14 @@
 
 Sensors::Sensors (int trig_pin_, int echo_pin_)
 {
-    //Wire.begin();
+    trig_pin = trig_pin_;
+    echo_pin = echo_pin_;
 
     for(int i = 0; i < 3; i++) 
     {
         raw_accel_data[i] = raw_mag_data[i] = raw_gyro_data[i] = 1;
         calibrated_accel_data[i] = calibrated_gyro_data[i] = calibrated_mag_data[i] = 1;
     }
-
-    trig_pin = trig_pin_;
-    echo_pin = echo_pin_;
 }
 
 void Sensors::init_sensors()
@@ -32,7 +30,7 @@ void Sensors::read_sensors()
     read_accel();
     read_mag();
     read_gyro();
-    //read_range();
+    read_range();
     //Serial.print ("Grabbing Data!\n");
 }
 

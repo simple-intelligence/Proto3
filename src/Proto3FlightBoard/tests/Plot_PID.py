@@ -32,8 +32,8 @@ while ser.isOpen():
 
     except KeyboardInterrupt:
         ser.close ()
-        #plt.plot (raw_pitch_record, label="raw_pitch")
-        #plt.plot (raw_roll_record, label="raw_roll")
+        plt.plot (raw_pitch_record, label="raw_pitch")
+        plt.plot (raw_roll_record, label="raw_roll")
         plt.plot (pitch_record, label="pitch_pid")
         plt.plot (roll_record, label="roll_pid")
         plt.legend ()
