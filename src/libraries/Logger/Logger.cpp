@@ -20,13 +20,13 @@ void Logger::Count ()
 void Logger::Log_Int (int data)
 {
     Serial.print (data);
-    Serial.print (":");
+    Serial.print (" : ");
 }
 
 void Logger::Log_Float (float data)
 {
     Serial.print (data);
-    Serial.print (":");
+    Serial.print (" : ");
 }
 
 void Logger::End_Line ()

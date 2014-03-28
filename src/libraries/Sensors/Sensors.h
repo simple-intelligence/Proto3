@@ -34,14 +34,19 @@ private:
     float range_timer;
     float last_time;
 
-public:
-    int16_t calibrated_accel_data[3];
-    int16_t calibrated_gyro_data[3];
-    int16_t calibrated_mag_data[3];
+    int16_t calibrated_accel_constants[3];
+    int16_t calibrated_gyro_constants[3];
+    int16_t calibrated_mag_constants[3];
+
     int16_t raw_accel_data[3];
     int16_t raw_gyro_data[3];
     int16_t raw_mag_data[3];
+
+public:
     float range;
+    float calibrated_accel_data[3];
+    float calibrated_gyro_data[3];
+    float calibrated_mag_data[3];
 
     Sensors (int trig_pin, int echo_pin);
     void i2c_write(int address, byte reg, byte data);
@@ -53,11 +58,12 @@ public:
     void read_accel();
     void read_gyro();
     void read_mag();
+    void read_range();
 
     void init_sensors();
-    void read_sensors();
+    void read_sensors(int get_range);
+    void calibrate_sensors();
 
-    void read_range();
     void set_trig_pin (int pin);
     void set_echo_pin (int pin);
 };

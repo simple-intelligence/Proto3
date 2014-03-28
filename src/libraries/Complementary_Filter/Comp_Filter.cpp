@@ -2,9 +2,12 @@
 
 #include "Comp_Filter.h"
 
-Complementary_Filter::Complementary_Filter (float dt, float accel_constant, float gyro_constant)
+Complementary_Filter::Complementary_Filter (float accel_constant, float gyro_constant)
 {
-    DT = dt;
+    unsigned long current_time = 0;
+    unsigned long last_time = 0;
+    unsigned long dt = 0;
+
     aC = accel_constant;
     gC = gyro_constant;
     angle = 0.0;
@@ -12,5 +15,11 @@ Complementary_Filter::Complementary_Filter (float dt, float accel_constant, floa
 
 void Complementary_Filter::Calculate (float gyro_data, float accel_angle)
 {
-   angle = gC * (angle + (gyro_data * DT)) + aC * accel_angle;
+    current_time = millis ();
+     
+    dt = (current_time - last_time) / 1000.0;
+    
+    angle = (gC * (angle + (gyro_data * dt))) + (aC * accel_angle);
+
+    last_time = current_time;
 }

@@ -10,6 +10,8 @@ private:
     int MIN_PWM;
     int MID_PWM;
     int MAX_PWM;
+    unsigned long current_time;
+    unsigned long last_time;
 
 public:
     float Pitch_Input;

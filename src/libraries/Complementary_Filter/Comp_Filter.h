@@ -4,14 +4,17 @@
 class Complementary_Filter
 {
 private:
-    float DT;
     float aC;
     float gC;
+    
+    unsigned long current_time;
+    unsigned long last_time;
+    unsigned long dt;
 
 public:
     float angle;
 
-    Complementary_Filter (float dt, float accel_constant, float gyro_constant);
+    Complementary_Filter (float accel_constant, float gyro_constant);
     void Calculate (float gyro_data, float accel_angle);
 };
 

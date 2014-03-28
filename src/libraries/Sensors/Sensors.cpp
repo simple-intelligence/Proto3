@@ -9,13 +9,14 @@ Sensors::Sensors (int trig_pin_, int echo_pin_)
 
     for(int i = 0; i < 3; i++) 
     {
-        raw_accel_data[i] = raw_mag_data[i] = raw_gyro_data[i] = 1;
-        calibrated_accel_data[i] = calibrated_gyro_data[i] = calibrated_mag_data[i] = 1;
+        raw_accel_data[i] = raw_mag_data[i] = raw_gyro_data[i] = 0;
+        calibrated_accel_constants[i] = calibrated_gyro_constants[i] = calibrated_mag_constants[i] = 0;
     }
 }
 
 void Sensors::init_sensors()
 {
+    Wire.begin ();
     pinMode(trig_pin, OUTPUT);
     pinMode(echo_pin, INPUT);
 
@@ -25,13 +26,19 @@ void Sensors::init_sensors()
     range = 0.0f;
 }
 
-void Sensors::read_sensors()
+void Sensors::read_sensors(int get_range)
 {
     read_accel();
     read_mag();
     read_gyro();
-    read_range();
-    //Serial.print ("Grabbing Data!\n");
+    if (get_range) { read_range(); }
+
+    for (int i = 0; i < 3; i++)
+    { 
+        calibrated_accel_data[i] = (float)raw_accel_data[i] - calibrated_accel_constants[i];
+        calibrated_gyro_data[i] = ((float)raw_gyro_data[i] - calibrated_gyro_constants[i]) / 14.375;
+        calibrated_mag_data[i] = (float)raw_mag_data[i] - calibrated_mag_constants[i];
+    }
 }
 
 void Sensors::i2c_write(int address, byte reg, byte data) 
@@ -159,4 +166,38 @@ void Sensors::set_trig_pin (int pin)
 void Sensors::set_echo_pin (int pin)
 {
     echo_pin = pin;
+}
+
+void Sensors::calibrate_sensors()
+{
+    int i = 0;
+    float gyro_avg[3];
+
+    // Gyro
+    gyro_avg[0] = 0.0;
+    gyro_avg[1] = 0.0;
+    gyro_avg[2] = 0.0;
+
+    for (i = 0; i < 500; i++)
+    {
+        read_sensors (0);
+        gyro_avg[0] += (((float)raw_gyro_data[0] - gyro_avg[0]) / (float)(i + 1));
+        gyro_avg[1] += (((float)raw_gyro_data[1] - gyro_avg[1]) / (float)(i + 1));
+        gyro_avg[2] += (((float)raw_gyro_data[2] - gyro_avg[2]) / (float)(i + 1));
+        delay (5);
+    }
+
+    Serial.print (gyro_avg[0]);
+    Serial.print (" : ");
+    Serial.print (gyro_avg[1]);
+    Serial.print (" : ");
+    Serial.println (gyro_avg[2]);
+
+    calibrated_gyro_constants[0] = gyro_avg[0];
+    calibrated_gyro_constants[1] = gyro_avg[1];
+    calibrated_gyro_constants[2] = gyro_avg[2];
+
+
+    //int16_t accel_avg;
+    //int16_t mag_avg;
 }

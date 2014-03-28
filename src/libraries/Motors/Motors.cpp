@@ -16,6 +16,9 @@ Motor_Control::Motor_Control (int Min_Pwm, int Max_Pwm)
     Roll_Input = 0.0f;
     Yaw_Input = 0.0f;
     Throttle_Input = 0.0f;
+
+    current_time = 0;
+    last_time = 0;
 }
 
 void Motor_Control::Init_Motors ()
@@ -42,18 +45,25 @@ void Motor_Control::Set_Motor_Inputs (float Throttle, float Pitch, float Roll, f
 
 void Motor_Control::Write_Motor_Out ()
 {
-    Front_Left_Pin.writeMicroseconds(Front_Left_Output_Int * 1000);
-    //delayMicroseconds(1000);
+    current_time = millis ();
+     
+    // Sets a motor refresh rate of 20 hz. (50 millisecond period)
+    if (current_time - last_time > 50)
+    {
+        last_time = current_time;
+        Front_Left_Pin.writeMicroseconds(Front_Left_Output_Int * 1000);
+        //delayMicroseconds(1000);
 
-    Front_Right_Pin.writeMicroseconds(Front_Right_Output_Int * 1000);
-    //delayMicroseconds(1000);   
+        Front_Right_Pin.writeMicroseconds(Front_Right_Output_Int * 1000);
+        //delayMicroseconds(1000);   
 
-    Back_Left_Pin.writeMicroseconds(Back_Left_Output_Int * 1000);
-    //delayMicroseconds(1000); 
+        Back_Left_Pin.writeMicroseconds(Back_Left_Output_Int * 1000);
+        //delayMicroseconds(1000); 
 
-    Back_Right_Pin.writeMicroseconds(Back_Right_Output_Int * 1000);
-    //delayMicroseconds(1000);
-    delayMicroseconds (1500);
+        Back_Right_Pin.writeMicroseconds(Back_Right_Output_Int * 1000);
+        //delayMicroseconds(1000);
+        delayMicroseconds (1500);
+    }
 }
 
 void Motor_Control::Set_Motor_Range (int Min_Pwm, int Max_Pwm)
