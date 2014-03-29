@@ -1,3 +1,5 @@
+/* Proto Flight Board Version 1 */
+
 #include <Wire.h>
 #include <Servo.h>
 
@@ -17,21 +19,22 @@
 
 Sensors Sensor_Data (12, 13); // Trig, Echo
 
-Kalman Pitch_Kalman (0.008); // DT
-Kalman Roll_Kalman (0.008);
+// Unused for now
+//Kalman Pitch_Kalman (0.008); // DT
+//Kalman Roll_Kalman (0.008);
 
-Complementary_Filter Pitch_Comp (0.05, 0.95); // DT, Accel_Multiplier, Gyro_Multiplier
+Complementary_Filter Pitch_Comp (0.05, 0.95); // Accel_Multiplier, Gyro_Multiplier
 Complementary_Filter Roll_Comp (0.05, 0.95);
 
-PID_Class Pitch_PID (5, 1.0, 0.0, -20.0, 20.0, 0.0); // kP, kI, kD, Min_Integrator, Max_Integrator, Setpoint
-PID_Class Roll_PID (5, 1.0, 0.0, -20.0, 20.0, 0.0);
-PID_Class Throttle_PID (0.2, 0.2, 0.0, -10.0, 10.0, 100.0);
+PID_Class Pitch_PID (1.0, .1, 0.0, -20.0, 20.0, 0.0); // kP, kI, kD, Min_Integrator, Max_Integrator, Setpoint
+PID_Class Roll_PID (1.0, .1, 0.0, -20.0, 20.0, 0.0);
+PID_Class Throttle_PID (0.2, 0.2, 0.0, -10.0, 10.0, 0.0);
 
 Controller Controls;
 
-Motor_Control Motors (10, 180); // Min_PWM, Max_PWM
+Motor_Control Motors (23, 100); // Min_PWM, Max_PWM
 
-Logger Logging (2, 1); // Logging_Rate, On/Off
+Logger Logging (10, 1); // Logging_Rate (cycles/msg), On/Off
 
 /*****************
 * Initialization *
@@ -42,8 +45,11 @@ void setup ()
     //Wire.begin ();  
     Serial.begin (9600);
 
+    Serial.println ("Initializing!");
     Sensor_Data.init_sensors ();
-    Motors.Init_Motors ();
+    Motors.Init_Motors (2, 3, 4, 5); // FL, FR, BL, BR
+    
+    Serial.println ("Calibrating Gyro!");
     Sensor_Data.calibrate_sensors ();
 }
 
@@ -52,14 +58,11 @@ void loop ()
     /*****************
     * Control Loop   *
     *****************/
-
-    float Raw_Pitch_Angle = 0.0;
-    float Raw_Roll_Angle = 0.0;
     
     Sensor_Data.read_sensors (0);
 
-    Raw_Pitch_Angle = atan2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
-    Raw_Roll_Angle = atan2 (Sensor_Data.calibrated_accel_data[1], Sensor_Data.calibrated_accel_data[2]);
+    float Raw_Pitch_Angle = atan2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
+    float Raw_Roll_Angle = atan2 (Sensor_Data.calibrated_accel_data[1], Sensor_Data.calibrated_accel_data[2]);
     
     //Pitch_Kalman.compute (calibrated_Pitch_Angle, (float)Sensor_Data.calibrated_gyro_data[1]);
     //Roll_Kalman.compute (calibrated_Roll_Angle, (float)Sensor_Data.calibrated_gyro_data[0]);
@@ -87,11 +90,10 @@ void loop ()
     else
     {
         //Motors.Set_Motor_Inputs (Throttle_PID.Drive, Pitch_PID.Drive, Roll_PID.Drive, 0.0);
-        Motors.Set_Motor_Inputs (50.0, Pitch_PID.Drive, Roll_PID.Drive, 0.0);
+        Motors.Set_Motor_Inputs (0.0, Pitch_PID.Drive, Roll_PID.Drive, 0.0);
     }
     
     // Run Motors
-    Motors.Map_Motor_Inputs();
     Motors.Write_Motor_Out();
     
     /************
@@ -111,8 +113,8 @@ void loop ()
         //Logging.Log_Float (Pitch_Kalman.x1 * 64.0);
         //Logging.Log_Float (Roll_Kalman.x1 * 64.0);
         
-        Logging.Log_Float (Pitch_Comp.angle * 64.0);
-        Logging.Log_Float (Roll_Comp.angle * 64.0);
+        //Logging.Log_Float (Pitch_Comp.angle * 64.0);
+        //Logging.Log_Float (Roll_Comp.angle * 64.0);
         
         //Logging.Log_Float (Sensor_Data.range);
         
@@ -121,23 +123,23 @@ void loop ()
         //Logging.Log_Int (Sensor_Data.calibrated_gyro_data[2]);
 
         //Logging.Log_Float (-Throttle_PID.Drive);
-        Logging.Log_Float (Pitch_PID.Drive);
-        Logging.Log_Float (Roll_PID.Drive);
+        //Logging.Log_Float (Pitch_PID.Drive);
+        //Logging.Log_Float (Roll_PID.Drive);
         
         //Logging.Log_Float (Controls.Throttle_Input);.
         //Logging.Log_Float (Controls.Pitch_Input);
         //Logging.Log_Float (Controls.Roll_Input);
         //Logging.Log_Float (Controls.Yaw_Input);
         
-        //Logging.Log_Float (Motors.Throttle_Input);
-        //Logging.Log_Float (Motors.Pitch_Input);
-        //Logging.Log_Float (Motors.Roll_Input);
-        //Logging.Log_Float (Motors.Yaw_Input);
+        Logging.Log_Float (Motors.Throttle_Input);
+        Logging.Log_Float (Motors.Pitch_Input);
+        Logging.Log_Float (Motors.Roll_Input);
+        Logging.Log_Float (Motors.Yaw_Input);
         
-        //Logging.Log_Int (Motors.Front_Left_Output_Int);
-        //Logging.Log_Int (Motors.Front_Right_Output_Int);
-        //Logging.Log_Int (Motors.Back_Left_Output_Int);
-        //Logging.Log_Int (Motors.Back_Right_Output_Int);
+        Logging.Log_Int (Motors.Front_Left_Output_Int);
+        Logging.Log_Int (Motors.Front_Right_Output_Int);
+        Logging.Log_Int (Motors.Back_Left_Output_Int);
+        Logging.Log_Int (Motors.Back_Right_Output_Int);
         
         Logging.End_Line ();
     }

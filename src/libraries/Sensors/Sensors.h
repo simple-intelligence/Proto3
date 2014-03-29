@@ -62,7 +62,10 @@ public:
 
     void init_sensors();
     void read_sensors(int get_range);
+
     void calibrate_sensors();
+    void store_calibration();
+    void retrieve_calibration();
 
     void set_trig_pin (int pin);
     void set_echo_pin (int pin);

@@ -5,16 +5,24 @@
 
 class Controller
 {
+private:
+    int Control_Timer;
+    int Control_Timeout_Limit;
+
 public:
-    int Message_Recieved;
     int Pitch_Input;
     int Roll_Input;
     int Throttle_Input;
     int Yaw_Input;
     int Arm_Input;
+    int Calibrate_Input;
 
-    Controller ();
+    bool Control_Timeout;
+    bool Message_Recieved;
+
+    Controller (int control_timeout);
     void Parse_Serial();
+    void Check_Timeout();
 };
 
 #endif

@@ -1,18 +1,25 @@
 #include <Arduino.h>
 #include "Controller.h"
 
-Controller::Controller ()
+Controller::Controller (int control_timeout)
 {
-    int Pitch_Input = 0;
-    int Roll_Input = 0;
-    int Throttle_Input = 0;
-    int Yaw_Input = 0;
-    int Arm_Input = 0;
+    Pitch_Input = 0;
+    Roll_Input = 0;
+    Throttle_Input = 0;
+    Yaw_Input = 0;
+    Arm_Input = 0;
+    Stabalize_Input = 0;
+    Calibrate_Input = 0;
+
+    Control_Timeout = true;
+    Control_Timer = 0;
+    Control_Timeout_Limit = control_timeout;
 }
 
 void Controller::Parse_Serial ()
 {
     int i = 0;
+
     if (Serial.available())
     {
         // Synchronize to leading 'B'
@@ -27,12 +34,26 @@ void Controller::Parse_Serial ()
         Roll_Input = Serial.parseInt(); 
         Throttle_Input = Serial.parseInt(); 
         Arm_Input = Serial.parseInt();
-        //Hover_Input = Serial.parseInt();
+        Calibrate_Input.parseInt();
 
-        Message_Recieved = 1;
+        // Message recieved and reset timeout
+        Message_Recieved = true;
+        Control_Counter = 0;
+        Control_Timeout = false;
+        
         return;
     }
     else
-        Message_Recieved = 0;
+    {
+        Check_Timeout();
+        Message_Recieved = false;
         return;
+    }
+}
+
+void Controller::Check_Timeout()
+{
+    Control_Counter += 1;
+    if (Control_Counter >= Control_Timeout_Limit) { Control_Timeout = true; }
+    else { Control_Timeout = false; }
 }

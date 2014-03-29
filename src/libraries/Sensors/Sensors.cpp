@@ -1,5 +1,7 @@
 #include <Arduino.h>
 #include <Wire.h>
+#include <EEPROM.h>
+
 #include "Sensors.h"
 
 Sensors::Sensors (int trig_pin_, int echo_pin_)
@@ -187,17 +189,7 @@ void Sensors::calibrate_sensors()
         delay (5);
     }
 
-    Serial.print (gyro_avg[0]);
-    Serial.print (" : ");
-    Serial.print (gyro_avg[1]);
-    Serial.print (" : ");
-    Serial.println (gyro_avg[2]);
-
     calibrated_gyro_constants[0] = gyro_avg[0];
     calibrated_gyro_constants[1] = gyro_avg[1];
     calibrated_gyro_constants[2] = gyro_avg[2];
-
-
-    //int16_t accel_avg;
-    //int16_t mag_avg;
 }

@@ -21,18 +21,17 @@ Motor_Control::Motor_Control (int Min_Pwm, int Max_Pwm)
     last_time = 0;
 }
 
-void Motor_Control::Init_Motors ()
+void Motor_Control::Init_Motors (int front_left, int front_right, int back_left, int back_right)
 {
-    Front_Left_Pin.attach (2);  
-    Front_Right_Pin.attach (3);  
-    Back_Left_Pin.attach (4);  
-    Back_Right_Pin.attach (5);  
+    Front_Left_Pin.attach (front_left);  
+    Front_Right_Pin.attach (front_right);  
+    Back_Left_Pin.attach (back_left);  
+    Back_Right_Pin.attach (back_right);  
 
-    Front_Left_Output_Int = 10;
-    Front_Right_Output_Int = 10;
-    Back_Left_Output_Int = 10;
-    Back_Right_Output_Int = 10;
-    Write_Motor_Out();
+    // Zero motors
+    delay (60);
+    Set_Motor_Inputs (0.0, 0.0, 0.0, 0.0);
+    Write_Motor_Out ();
 }
 
 void Motor_Control::Set_Motor_Inputs (float Throttle, float Pitch, float Roll, float Yaw)
@@ -45,24 +44,21 @@ void Motor_Control::Set_Motor_Inputs (float Throttle, float Pitch, float Roll, f
 
 void Motor_Control::Write_Motor_Out ()
 {
+    Map_Motor_Inputs ();
+
     current_time = millis ();
      
     // Sets a motor refresh rate of 20 hz. (50 millisecond period)
     if (current_time - last_time > 50)
     {
         last_time = current_time;
-        Front_Left_Pin.writeMicroseconds(Front_Left_Output_Int * 1000);
-        //delayMicroseconds(1000);
 
-        Front_Right_Pin.writeMicroseconds(Front_Right_Output_Int * 1000);
-        //delayMicroseconds(1000);   
+        Front_Left_Pin.write(Front_Left_Output_Int);
+        Front_Right_Pin.write(Front_Right_Output_Int);
+        Back_Left_Pin.write(Back_Left_Output_Int);
+        Back_Right_Pin.write(Back_Right_Output_Int);
 
-        Back_Left_Pin.writeMicroseconds(Back_Left_Output_Int * 1000);
-        //delayMicroseconds(1000); 
-
-        Back_Right_Pin.writeMicroseconds(Back_Right_Output_Int * 1000);
-        //delayMicroseconds(1000);
-        delayMicroseconds (1500);
+        delay (15);
     }
 }
 
