@@ -6,7 +6,7 @@
 class Controller
 {
 private:
-    int Control_Timer;
+    int Control_Counter;
     int Control_Timeout_Limit;
 
 public:
@@ -15,6 +15,7 @@ public:
     int Throttle_Input;
     int Yaw_Input;
     int Arm_Input;
+    int Stabalize_Input;
     int Calibrate_Input;
 
     bool Control_Timeout;

@@ -12,6 +12,7 @@ private:
     unsigned long dt;
 
 public:
+    float angle_radians;
     float angle;
 
     Complementary_Filter (float accel_constant, float gyro_constant);
