@@ -4,34 +4,34 @@ import threading
 from time import sleep
 
 class Controller:
-        """
-        Gets input from a controller recognized by xboxdrv.
+    """
+    Gets input from a controller recognized by xboxdrv.
 
-        Parameters
-        ----------
-        return_values: list, optional
-            Values to return from the controller. use get_input_names()
-            to get the names of these values.
-        return_as: list, optional
-            Names to return the input values as. it must be the same length 
-            as return_values
-        in_range: tuple, optional
-            Range in the format (min, max) where min is the lowest incoming value and max
-            the greatest
-        out_range: tuple, optional
-            Range in the format (min, max) where min is the lowest desired outgoing value and max
-            the greatest
+    Parameters
+    ----------
+    return_values: list, optional
+        Values to return from the controller. use get_input_names()
+        to get the names of these values.
+    return_as: list, optional
+        Names to return the input values as. it must be the same length 
+        as return_values
+    in_range: tuple, optional
+        Range in the format (min, max) where min is the lowest incoming value and max
+        the greatest
+    out_range: tuple, optional
+        Range in the format (min, max) where min is the lowest desired outgoing value and max
+        the greatest
 
-        Returns
-        -------
-        controller_outputs: dict
-            Dict with an entry for each button specified on the controller.
+    Returns
+    -------
+    controller_outputs: dict
+        Dict with an entry for each button specified on the controller.
 
-        NOTE:
-        return_values may be present while return_as can still be none, however, in_range and out_range must both exist
-        """
+    NOTE:
+    return_values may be present while return_as can still be none, however, in_range and out_range must both exist
+    """
 
-    class __parser__ (threading.Thread):
+    class __parser__(threading.Thread):
         def __init__(self, _xboxdrv_process):
             """
             Parses the input from xboxdrv. It runs as a seperate thread to prevent
@@ -48,14 +48,12 @@ class Controller:
                 line = self.xboxdrv.stdout.readline ()
 
                 try:
-                    """
-                    This is a somewhat hackey method but it should work for all controllers that xboxdrv can handle.
-                    
-                    xboxdrv prints off controller inputs as "X1:120 Y1: 10 select:1" etc...
-                    Just splitting by spaces does not work as it would seperate "Y1:" and "10". 
-                    This method removes all spaces after a ":" but does not affect the spaces after the numerical
-                    value of an input.
-                    """
+                    #This is a somewhat hackey method but it should work for all controllers that xboxdrv can handle.
+                    #
+                    #xboxdrv prints off controller inputs as "X1:120 Y1: 10 select:1" etc...
+                    #Just splitting by spaces does not work as it would seperate "Y1:" and "10". 
+                    #This method removes all spaces after a ":" but does not affect the spaces after the numerical
+                    #value of an input.
 
                     line = line.replace (":      ", ":     ")
                     line = line.replace (":     ",  ":    ")
@@ -148,6 +146,8 @@ class Controller:
         input_names: list
             The names of each value as xboxdrv sees it
         """
+        sleep (3)
+
         #TODO: this could fail if the parser catches a line from the info text that xboxdrv puts out
         while not self.line_parser.control_inputs:
             pass

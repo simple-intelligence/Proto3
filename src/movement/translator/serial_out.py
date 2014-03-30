@@ -8,36 +8,30 @@ import serial
 sys.path.append (os.path.abspath("../../"))
 from communication.zmq_communicator import communicator
 
+#ser = serial.Serial (port = "/dev/ttyACM0", baudrate=9600, timeout=0)
 ser = serial.Serial (port = "/dev/ttyACM0", baudrate=9600)
 
 def setup_serial ():
     ser.close ()
     ser.open ()
 
-def send_flight_controls (pitch, yaw, roll, z, arm, hover):
+def send_flight_controls (pitch, yaw, roll, z, arm, stabalize, calibrate):
     if ser.isOpen ():
-        ser.write ("B{p},{y},{r},{z_pos},{a},{h}\n".format (p=int (pitch), y=int (yaw), r=int (roll), z_pos=int (z), a=int (arm), h=int (hover)))
-        print "B{p},{y},{r},{z_pos},{a},{h}\n".format (p=int (pitch), y=int (yaw), r=int (roll), z_pos=int (z), a=int (arm), h=int (hover))
+        ser.write ("B{p},{y},{r},{z_pos},{a},{s},{c}\n".format (p=int (pitch), y=int (yaw), r=int (roll), z_pos=int (z), a=int (arm), s=int (stabalize), c=int (calibrate)))
+        print "B{p},{y},{r},{z_pos},{a},{s},{c}\n".format (p=int (pitch), y=int (yaw), r=int (roll), z_pos=int (z), a=int (arm), s=int (stabalize), c=int (calibrate))
 
 def main ():
     com = communicator ("Translator")
     last_timestamp = 0
 
     while True:
-        msg = {"message":0, "time":0}
         msg = com.get_message ("Switcher")
-        #print msg
         if msg and msg["time"] > last_timestamp:
             last_timestamp = msg["time"]
-    
-            pitch = msg["message"]["Pitch"] * 100
-            yaw = msg["message"]["Yaw"] * 100
-            roll = msg["message"]["Roll"] * 100
-            z = msg["message"]["Z"] * 100
-            arm = int (msg["message"]["Arm"]) 
-            hover = int (msg["message"]["Hover"])
+            msg = msg["message"]
 
-            send_flight_controls (pitch, yaw, roll, z, arm, hover)
+            send_flight_controls (msg["Pitch"], msg["Yaw"], msg["Roll"], msg["Z"], msg["Arm"], msg["Stabalize"], msg["Calibrate"])
+
         sleep (.05)
 
 if __name__=="__main__":
