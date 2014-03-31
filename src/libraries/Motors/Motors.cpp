@@ -23,6 +23,11 @@ Motor_Control::Motor_Control (int Min_Pwm, int Max_Pwm)
 
 void Motor_Control::Init_Motors (int front_left, int front_right, int back_left, int back_right)
 {
+    pinMode (4, OUTPUT);
+    pinMode (12, OUTPUT);
+    digitalWrite (12, HIGH);
+    digitalWrite (4, HIGH);
+
     Front_Left_Pin.attach (front_left);  
     Front_Right_Pin.attach (front_right);  
     Back_Left_Pin.attach (back_left);  
@@ -53,10 +58,10 @@ void Motor_Control::Write_Motor_Out ()
     {
         last_time = current_time;
 
-        Front_Left_Pin.write(Front_Left_Output_Int);
-        Front_Right_Pin.write(Front_Right_Output_Int);
-        Back_Left_Pin.write(Back_Left_Output_Int);
-        Back_Right_Pin.write(Back_Right_Output_Int);
+        Front_Left_Pin.writeMicroseconds (Front_Left_Output_Int);
+        Front_Right_Pin.writeMicroseconds (Front_Right_Output_Int);
+        Back_Left_Pin.writeMicroseconds (Back_Left_Output_Int);
+        Back_Right_Pin.writeMicroseconds (Back_Right_Output_Int);
 
         delay (15);
     }

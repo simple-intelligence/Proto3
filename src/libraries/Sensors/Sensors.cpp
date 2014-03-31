@@ -25,7 +25,7 @@ void Sensors::init_sensors()
     init_accel();
     init_mag();
     init_gyro();
-    range = 0.0f;
+    range = 0.0;
 }
 
 void Sensors::read_sensors(int get_range)
@@ -76,8 +76,6 @@ void Sensors::init_accel()
     i2c_write(ACCEL_ADDRESS, ACCEL_REGISTER_PWRCTL, ACCEL_PWRCTL_MEASURE);
 
     i2c_read(ACCEL_ADDRESS, ACCEL_REGISTER_PWRCTL, 1, &data);
-    //Serial.println((unsigned int)data);
-}
 
 void Sensors::read_accel() 
 {
@@ -100,7 +98,6 @@ void Sensors::init_gyro()
 
     i2c_read(GYRO_ADDRESS, GYRO_REGISTER_DLPF_FS, 1, &data);
 
-    //Serial.println((unsigned int)data);
 }
 
 void Sensors::read_gyro() 
@@ -122,7 +119,6 @@ void Sensors::init_mag()
     i2c_write(MAG_ADDRESS, MAG_REGISTER_MEASUREMODE, MAG_MEASUREMODE_CONT);
 
     i2c_read(MAG_ADDRESS, MAG_REGISTER_MEASUREMODE, 1, &data);
-    //Serial.println((unsigned int)data);
 }
 
 void Sensors::read_mag() 

@@ -18,7 +18,7 @@
 * Flight Libraries *
 *******************/
 
-Sensors Sensor_Data (12, 13); // Trig, Echo
+Sensors Sensor_Data (2, 3); // Trig, Echo
 
 Kalman Pitch_Kalman (0.008); // DT
 Kalman Roll_Kalman (0.008);
@@ -32,7 +32,7 @@ PID_Class Throttle_PID (0.2, 0.2, 0.0, -10.0, 10.0, 0.0);
 
 Controller Controls (30); // Control_Timeout
 
-Motor_Control Motors (23, 100); // Min_PWM, Max_PWM
+Motor_Control Motors (800, 2000); // Min_PWM, Max_PWM
 
 Logger Logging (5, 1); // Logging_Rate (cycles/msg), On/Off
 
@@ -50,14 +50,14 @@ void setup ()
     Serial.begin (9600);
 
     Serial.println ("Initializing SI ProtoCopter!");
-    Motors.Init_Motors (2, 3, 4, 5); // FL, FR, BL, BR
+    Motors.Init_Motors (5, 6, 10, 11); // FL, FR, BL, BR
     Sensor_Data.init_sensors ();
 }
 
 void loop ()
 {
     Sensor_Data.read_sensors (0); // No range yet
-
+    
     // Raw angles
     float Raw_Pitch_Angle = atan2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
     float Raw_Roll_Angle = atan2 (Sensor_Data.calibrated_accel_data[1], Sensor_Data.calibrated_accel_data[2]);
@@ -172,7 +172,6 @@ void loop ()
 
 void Check_Emergency ()
 {
-    Serial.println (EMERGENCY_COUNTER);
     if (Pitch_Comp.angle > 90.0)
     {
         EMERGENCY_COUNTER += 1;
