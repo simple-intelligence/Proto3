@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <Wire.h>
-#include <EEPROM.h>
 
 #include "Sensors.h"
 
@@ -76,6 +75,7 @@ void Sensors::init_accel()
     i2c_write(ACCEL_ADDRESS, ACCEL_REGISTER_PWRCTL, ACCEL_PWRCTL_MEASURE);
 
     i2c_read(ACCEL_ADDRESS, ACCEL_REGISTER_PWRCTL, 1, &data);
+}
 
 void Sensors::read_accel() 
 {

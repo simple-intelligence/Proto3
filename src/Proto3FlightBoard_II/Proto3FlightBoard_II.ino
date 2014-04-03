@@ -2,7 +2,6 @@
 
 #include <Wire.h>
 #include <Servo.h>
-#include <EEPROM.h>
 
 #include "Kalman.h"
 #include "Sensors.h"
@@ -12,7 +11,7 @@
 #include "Motors.h"
 #include "Comp_Filter.h"
 
-#include "math.h"
+//#include "math.h"
 
 /*******************
 * Flight Libraries *
@@ -39,18 +38,25 @@ Logger Logging (5, 1); // Logging_Rate (cycles/msg), On/Off
 /**********
 * Globals *
 **********/
+bool TEST_MOTORS = true;
 
 bool ARMED = false;
 bool RADIO_BYPASS = false; // Future addition possibly
 bool EMERGENCY = false;
 int EMERGENCY_COUNTER = 0;
 
+bool CALIBRATED = false;
+
+/*****************
+* Initialization *
+*****************/
+
 void setup ()
 {
-    Serial.begin (9600);
+    Serial.begin (115200);
 
     Serial.println ("Initializing SI ProtoCopter!");
-    Motors.Init_Motors (5, 6, 10, 11); // FL, FR, BL, BR
+    Motors.Init_Motors (4, 5, 6, 7); // FL, FR, BL, BR
     Sensor_Data.init_sensors ();
 }
 
@@ -59,8 +65,8 @@ void loop ()
     Sensor_Data.read_sensors (0); // No range yet
     
     // Raw angles
-    float Raw_Pitch_Angle = atan2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
-    float Raw_Roll_Angle = atan2 (Sensor_Data.calibrated_accel_data[1], Sensor_Data.calibrated_accel_data[2]);
+    float Raw_Pitch_Angle = atan_2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
+    float Raw_Roll_Angle = atan_2 (Sensor_Data.calibrated_accel_data[1], Sensor_Data.calibrated_accel_data[2]);
 
     // Filter
     Pitch_Comp.Calculate (Sensor_Data.calibrated_gyro_data[1], Raw_Pitch_Angle);
@@ -105,11 +111,19 @@ void loop ()
             {
                 if (Controls.Calibrate_Input)
                 {
-                    // Put in calibration timer since it can be queued!
-                    Serial.println ("Calibrating!");
-                    Motors.Set_Motor_Inputs (0.0, 0.0, 0.0, 0.0); // Just in case
-                    Sensor_Data.calibrate_sensors (); // blink status led or something?
-                }
+                    if (!CALIBRATED)
+                    {
+                        Serial.println ("Calibrating!");
+                        Motors.Set_Motor_Inputs (0.0, 0.0, 0.0, 0.0); // Just in case
+                        Sensor_Data.calibrate_sensors (); // blink status led or something?
+                            
+                        if (TEST_MOTORS)
+                        {
+                            Motors.Motor_Test ();
+                        }
+                        CALIBRATED = true;
+                    }  
+              }
                 else if (Controls.Arm_Input && !Controls.Throttle_Input)
                 {
                     Serial.println ("ARMING!");
@@ -259,4 +273,15 @@ void Log ()
         
         Logging.End_Line ();
     }
+}
+
+float atan_2 (float y, float x)
+{
+    if (x > 0) { return atan (y/x); }
+    else if (y >= 0 && x < 0) { return 3.141592 + atan (y/x); }
+    else if (y < 0 && x < 0) { return -3.141592 + atan (y/x); }
+    else if (y > 0) { return 3.141592 / 2.0; }
+    else if (y < 0) { return -3.141592 / 2.0; }
+    // Else returning 0 although technically undefined
+    else { return 0; }  
 }

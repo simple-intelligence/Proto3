@@ -23,10 +23,8 @@ Motor_Control::Motor_Control (int Min_Pwm, int Max_Pwm)
 
 void Motor_Control::Init_Motors (int front_left, int front_right, int back_left, int back_right)
 {
-    pinMode (4, OUTPUT);
-    pinMode (12, OUTPUT);
-    digitalWrite (12, HIGH);
-    digitalWrite (4, HIGH);
+    pinMode (0, OUTPUT);
+    digitalWrite (0, HIGH);
 
     Front_Left_Pin.attach (front_left);  
     Front_Right_Pin.attach (front_right);  
@@ -77,11 +75,11 @@ void Motor_Control::Set_Motor_Range (int Min_Pwm, int Max_Pwm)
 void Motor_Control::Map_Motor_Inputs ()
 {
     // Calc motor outputs
-    // Check if yaw is correct
+    // TODO:Check if yaw is correct
     Front_Left_Output = Throttle_Input + Roll_Input - Pitch_Input + Yaw_Input;
     Front_Right_Output = Throttle_Input - Roll_Input - Pitch_Input - Yaw_Input;
-    Back_Left_Output = Throttle_Input + Roll_Input + Pitch_Input + Yaw_Input;
-    Back_Right_Output = Throttle_Input - Roll_Input + Pitch_Input - Yaw_Input;
+    Back_Left_Output = Throttle_Input + Roll_Input + Pitch_Input - Yaw_Input;
+    Back_Right_Output = Throttle_Input - Roll_Input + Pitch_Input + Yaw_Input;
 
     // Constrain
     Front_Left_Output = constrain (Front_Left_Output, 0.0, 100.0);
@@ -95,6 +93,53 @@ void Motor_Control::Map_Motor_Inputs ()
     Back_Left_Output_Int = map (Back_Left_Output, 0.0, 100.0, MIN_PWM, MAX_PWM);
     Back_Right_Output_Int = map (Back_Right_Output, 0.0, 100.0, MIN_PWM, MAX_PWM);
 }
+
+void Motor_Control::Motor_Test ()
+{
+    int test_delay = 1000;
+
+    delay (test_delay);
+    Set_Motor_Inputs (0.0, 0.0, 0.0, 0.0);
+    Write_Motor_Out ();
+    delay (test_delay);
+
+    Serial.println ("Testing Motors!");
+
+    // FL
+    Serial.println ("Front Left:");
+    Set_Motor_Inputs (50.0, 0.0, 0.0, 0.0);
+    Write_Motor_Out ();
+    delay (test_delay);
+    Serial.println ("Done.");
+
+    // FR
+    Serial.println ("Front Right");
+    Set_Motor_Inputs (0.0, 50.0, 0.0, 0.0);
+    Write_Motor_Out ();
+    delay (test_delay);
+    Serial.println ("Done.");
+
+    // BL
+    Serial.println ("Back Left");
+    Set_Motor_Inputs (0.0, 0.0, 50.0, 0.0);
+    Write_Motor_Out ();
+    delay (test_delay);
+    Serial.println ("Done.");
+
+    // BR
+    Serial.println ("Back Right");
+    Set_Motor_Inputs (0.0, 0.0, 0.0, 50.0);
+    Write_Motor_Out ();
+    delay (test_delay);
+    Serial.println ("Done.");
+
+    Serial.println ("Finished Motor Test!");
+
+    Set_Motor_Inputs (0.0, 0.0, 0.0, 0.0);
+    Write_Motor_Out ();
+    delay (test_delay);
+}
+
 /*
 void Motor_Control::Calibrate_ESCS ()
 {

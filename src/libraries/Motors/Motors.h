@@ -43,6 +43,7 @@ public:
     void Set_Motor_Inputs (float Throttle, float Pitch, float Roll, float Yaw);
     void Write_Motor_Out ();
     void Calibrate_ESCS ();
+    void Motor_Test ();
 };
 
 #endif
