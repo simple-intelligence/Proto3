@@ -12,7 +12,12 @@ Sensors::Sensors (int trig_pin_, int echo_pin_)
     {
         raw_accel_data[i] = raw_mag_data[i] = raw_gyro_data[i] = 0;
         calibrated_accel_constants[i] = calibrated_gyro_constants[i] = calibrated_mag_constants[i] = 0;
+        calibrated_accel_data[i] = calibrated_gyro_data[i] = calibrated_mag_data[i] = 0.0;
     }
+
+    range_timer = 0;
+    last_time = 0;
+    range = 0.0;
 }
 
 void Sensors::init_sensors()
@@ -24,16 +29,18 @@ void Sensors::init_sensors()
     init_accel();
     init_mag();
     init_gyro();
-    range = 0.0;
 }
 
-void Sensors::read_sensors(int get_range)
+void Sensors::read_sensors(int _get_range)
 {
     read_accel();
     read_mag();
     read_gyro();
 
-    if (get_range) { read_range(); }
+    if (_get_range == 1)
+    {
+        read_range();
+    }
 
     for (int i = 0; i < 3; i++)
     { 
@@ -41,6 +48,8 @@ void Sensors::read_sensors(int get_range)
         calibrated_gyro_data[i] = (float)((raw_gyro_data[i] - calibrated_gyro_constants[i]) / 14.375);
         calibrated_mag_data[i] = (float)(raw_mag_data[i] - calibrated_mag_constants[i]);
     }
+    
+    calibrated_accel_data[2] = -calibrated_accel_data[2];
 }
 
 void Sensors::i2c_write(int address, byte reg, byte data) 
@@ -102,7 +111,7 @@ void Sensors::init_gyro()
 }
 
 void Sensors::read_gyro() 
-    {
+{
     byte bytes[6];
     memset(bytes,0,6);
 

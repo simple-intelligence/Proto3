@@ -14,7 +14,7 @@
 * Flight Libraries *
 *******************/
 
-Sensors Sensor_Data (1, 2); // Trig, Echo
+Sensors Sensor_Data (3, 2); // Trig, Echo
 
 Complementary_Filter Pitch_Comp (0.05, 0.95); // Accel_Multiplier, Gyro_Multiplier
 Complementary_Filter Roll_Comp (0.05, 0.95);
@@ -25,17 +25,16 @@ PID_Class Throttle_PID (0.2, 0.2, 0.0, -10.0, 10.0, 0.0);
 
 Controller Controls (30); // Control_Timeout
 
-//Motor_Control Motors (1200, 2000); // Min_PWM, Max_PWM
 Motor_Control Motors (800, 2000); // Min_PWM, Max_PWM
 
-Logger Logging (5, 1); // Logging_Rate (cycles/msg), On/Off
+Logger Logging (5, 0); // Logging_Rate (cycles/msg), On/Off
 
 /**********
 * Globals *
 **********/
 
 // Change These
-int RANGE_ON = 0;
+int IS_RANGE_ON = 0;
 bool TEST_MOTORS = false;
 
 // Don't Change These
@@ -51,17 +50,17 @@ bool CALIBRATED = false;
 
 void setup ()
 {
-    Serial.begin (115200);
-
-    Serial.println ("Initializing SI ProtoCopter!");
-    Motors.Init_Motors (3, 4, 5, 6, 7); // FL, FR, BL, BR, Enable_Pin
+    Motors.Init_Motors (8, 9, 10, 11, 12); // FL, FR, BL, BR, Enable_Pin
     Sensor_Data.init_sensors ();
+    
+    Serial.begin (9600);
+    Serial.println ("Initializing SI ProtoCopter!");
 }
 
 void loop ()
 {
-    Sensor_Data.read_sensors (RANGE_ON); // No range yet
-    
+    Sensor_Data.read_sensors (IS_RANGE_ON); // No range yet
+
     // Raw angles
     float Raw_Pitch_Angle = atan2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
     float Raw_Roll_Angle = atan2 (Sensor_Data.calibrated_accel_data[1], Sensor_Data.calibrated_accel_data[2]);

@@ -10,6 +10,7 @@ Input ranges from -512 to 512 (10 bits)
 #define ACCEL_ADDRESS (0xA6 >> 1)
 #define ACCEL_REGISTER_XLSB (0x32)
 #define ACCEL_REGISTER_PWRCTL (0x2D)
+
 #define ACCEL_PWRCTL_MEASURE (1 << 3)
 
 #define GYRO_ADDRESS (0xD0 >> 1)
@@ -31,8 +32,8 @@ private:
     char c;
     int echo_pin;
     int trig_pin;
-    float range_timer;
-    float last_time;
+    unsigned long range_timer;
+    unsigned long last_time;
 
     int16_t calibrated_accel_constants[3];
     int16_t calibrated_gyro_constants[3];

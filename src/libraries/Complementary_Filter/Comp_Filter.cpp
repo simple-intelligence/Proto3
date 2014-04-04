@@ -17,7 +17,7 @@ void Complementary_Filter::Calculate (float gyro_data, float accel_angle)
 {
     current_time = millis ();
      
-    dt = ((current_time - last_time) / 1000.0);
+    dt = (float)((current_time - last_time) / 1000.0);
     
     angle_radians = ((gC * (angle_radians + (gyro_data * dt))) + (aC * accel_angle));
     angle = angle_radians * 64.0;
