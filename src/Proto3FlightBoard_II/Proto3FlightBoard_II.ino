@@ -3,7 +3,6 @@
 #include <Wire.h>
 #include <Servo.h>
 
-#include "Kalman.h"
 #include "Sensors.h"
 #include "PID.h"
 #include "Logger.h"
@@ -11,16 +10,11 @@
 #include "Motors.h"
 #include "Comp_Filter.h"
 
-//#include "math.h"
-
 /*******************
 * Flight Libraries *
 *******************/
 
 Sensors Sensor_Data (2, 3); // Trig, Echo
-
-Kalman Pitch_Kalman (0.008); // DT
-Kalman Roll_Kalman (0.008);
 
 Complementary_Filter Pitch_Comp (0.05, 0.95); // Accel_Multiplier, Gyro_Multiplier
 Complementary_Filter Roll_Comp (0.05, 0.95);
@@ -65,8 +59,8 @@ void loop ()
     Sensor_Data.read_sensors (0); // No range yet
     
     // Raw angles
-    float Raw_Pitch_Angle = atan_2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
-    float Raw_Roll_Angle = atan_2 (Sensor_Data.calibrated_accel_data[1], Sensor_Data.calibrated_accel_data[2]);
+    float Raw_Pitch_Angle = atan2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
+    float Raw_Roll_Angle = atan2 (Sensor_Data.calibrated_accel_data[1], Sensor_Data.calibrated_accel_data[2]);
 
     // Filter
     Pitch_Comp.Calculate (Sensor_Data.calibrated_gyro_data[1], Raw_Pitch_Angle);
@@ -275,6 +269,7 @@ void Log ()
     }
 }
 
+/*
 float atan_2 (float y, float x)
 {
     if (x > 0) { return atan (y/x); }
@@ -285,3 +280,4 @@ float atan_2 (float y, float x)
     // Else returning 0 although technically undefined
     else { return 0; }  
 }
+*/

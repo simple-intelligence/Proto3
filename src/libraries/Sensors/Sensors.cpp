@@ -32,13 +32,14 @@ void Sensors::read_sensors(int get_range)
     read_accel();
     read_mag();
     read_gyro();
+
     if (get_range) { read_range(); }
 
     for (int i = 0; i < 3; i++)
     { 
-        calibrated_accel_data[i] = (float)raw_accel_data[i] - calibrated_accel_constants[i];
-        calibrated_gyro_data[i] = ((float)raw_gyro_data[i] - calibrated_gyro_constants[i]) / 14.375;
-        calibrated_mag_data[i] = (float)raw_mag_data[i] - calibrated_mag_constants[i];
+        calibrated_accel_data[i] = (float)(raw_accel_data[i] - calibrated_accel_constants[i]);
+        calibrated_gyro_data[i] = (float)((raw_gyro_data[i] - calibrated_gyro_constants[i]) / 14.375);
+        calibrated_mag_data[i] = (float)(raw_mag_data[i] - calibrated_mag_constants[i]);
     }
 }
 

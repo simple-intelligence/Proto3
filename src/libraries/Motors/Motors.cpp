@@ -12,10 +12,10 @@ Motor_Control::Motor_Control (int Min_Pwm, int Max_Pwm)
     Back_Left_Output = 0;
     Back_Right_Output = 0;
 
-    Pitch_Input = 0.0f;
-    Roll_Input = 0.0f;
-    Yaw_Input = 0.0f;
-    Throttle_Input = 0.0f;
+    Pitch_Input = 0.0;
+    Roll_Input = 0.0;
+    Yaw_Input = 0.0;
+    Throttle_Input = 0.0;
 
     current_time = 0;
     last_time = 0;
