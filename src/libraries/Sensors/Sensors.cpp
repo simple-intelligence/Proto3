@@ -180,9 +180,9 @@ void Sensors::calibrate_sensors()
     for (i = 0; i < 500; i++)
     {
         read_sensors (0);
-        gyro_avg[0] += (((float)raw_gyro_data[0] - gyro_avg[0]) / (float)(i + 1));
-        gyro_avg[1] += (((float)raw_gyro_data[1] - gyro_avg[1]) / (float)(i + 1));
-        gyro_avg[2] += (((float)raw_gyro_data[2] - gyro_avg[2]) / (float)(i + 1));
+        gyro_avg[0] += ((raw_gyro_data[0] - gyro_avg[0]) / (float)(i + 1));
+        gyro_avg[1] += ((raw_gyro_data[1] - gyro_avg[1]) / (float)(i + 1));
+        gyro_avg[2] += ((raw_gyro_data[2] - gyro_avg[2]) / (float)(i + 1));
         delay (5);
     }
 

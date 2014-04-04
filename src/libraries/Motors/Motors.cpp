@@ -21,10 +21,12 @@ Motor_Control::Motor_Control (int Min_Pwm, int Max_Pwm)
     last_time = 0;
 }
 
-void Motor_Control::Init_Motors (int front_left, int front_right, int back_left, int back_right)
+void Motor_Control::Init_Motors (int front_left, int front_right, int back_left, int back_right, int enable_pin)
 {
-    pinMode (0, OUTPUT);
-    digitalWrite (0, HIGH);
+    Enable_Pin = enable_pin;
+
+    pinMode (Enable_Pin, OUTPUT);
+    digitalWrite (Enable_Pin, HIGH);
 
     Front_Left_Pin.attach (front_left);  
     Front_Right_Pin.attach (front_right);  
@@ -140,6 +142,10 @@ void Motor_Control::Motor_Test ()
     delay (test_delay);
 }
 
+void Motor_Control::Disable_Motors ()
+{
+    digitalWrite (Enable_Pin, LOW);
+}
 /*
 void Motor_Control::Calibrate_ESCS ()
 {

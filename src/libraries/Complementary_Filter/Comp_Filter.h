@@ -9,7 +9,7 @@ private:
     
     unsigned long current_time;
     unsigned long last_time;
-    unsigned long dt;
+    float dt;
 
 public:
     float angle_radians;

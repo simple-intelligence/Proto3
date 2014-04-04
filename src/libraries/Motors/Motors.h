@@ -12,6 +12,7 @@ private:
     int MAX_PWM;
     unsigned long current_time;
     unsigned long last_time;
+    int Enable_Pin;
 
     void Map_Motor_Inputs ();
 
@@ -38,12 +39,13 @@ public:
 
     Motor_Control (int Min_Pwm, int Max_Pwm);
 
-    void Init_Motors (int front_left, int front_right, int back_left, int back_right);
+    void Init_Motors (int front_left, int front_right, int back_left, int back_right, int enable_pin);
     void Set_Motor_Range (int Min_Pwm, int Max_Pwm);
     void Set_Motor_Inputs (float Throttle, float Pitch, float Roll, float Yaw);
     void Write_Motor_Out ();
     void Calibrate_ESCS ();
     void Motor_Test ();
+    void Disable_Motors ();
 };
 
 #endif

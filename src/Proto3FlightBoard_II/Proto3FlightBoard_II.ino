@@ -14,7 +14,7 @@
 * Flight Libraries *
 *******************/
 
-Sensors Sensor_Data (2, 3); // Trig, Echo
+Sensors Sensor_Data (1, 2); // Trig, Echo
 
 Complementary_Filter Pitch_Comp (0.05, 0.95); // Accel_Multiplier, Gyro_Multiplier
 Complementary_Filter Roll_Comp (0.05, 0.95);
@@ -25,6 +25,7 @@ PID_Class Throttle_PID (0.2, 0.2, 0.0, -10.0, 10.0, 0.0);
 
 Controller Controls (30); // Control_Timeout
 
+//Motor_Control Motors (1200, 2000); // Min_PWM, Max_PWM
 Motor_Control Motors (800, 2000); // Min_PWM, Max_PWM
 
 Logger Logging (5, 1); // Logging_Rate (cycles/msg), On/Off
@@ -32,13 +33,16 @@ Logger Logging (5, 1); // Logging_Rate (cycles/msg), On/Off
 /**********
 * Globals *
 **********/
-bool TEST_MOTORS = true;
 
+// Change These
+int RANGE_ON = 0;
+bool TEST_MOTORS = false;
+
+// Don't Change These
 bool ARMED = false;
 bool RADIO_BYPASS = false; // Future addition possibly
 bool EMERGENCY = false;
 int EMERGENCY_COUNTER = 0;
-
 bool CALIBRATED = false;
 
 /*****************
@@ -50,13 +54,13 @@ void setup ()
     Serial.begin (115200);
 
     Serial.println ("Initializing SI ProtoCopter!");
-    Motors.Init_Motors (4, 5, 6, 7); // FL, FR, BL, BR
+    Motors.Init_Motors (3, 4, 5, 6, 7); // FL, FR, BL, BR, Enable_Pin
     Sensor_Data.init_sensors ();
 }
 
 void loop ()
 {
-    Sensor_Data.read_sensors (0); // No range yet
+    Sensor_Data.read_sensors (RANGE_ON); // No range yet
     
     // Raw angles
     float Raw_Pitch_Angle = atan2 (Sensor_Data.calibrated_accel_data[0], Sensor_Data.calibrated_accel_data[2]);
@@ -73,7 +77,7 @@ void loop ()
 
     // TODO: Write diagram for this
     Controls.Parse_Serial ();
-    Check_Emergency ();
+    //Check_Emergency ();
     if (!EMERGENCY)
     {
         if (Controls.Message_Recieved)
@@ -108,13 +112,12 @@ void loop ()
                     if (!CALIBRATED)
                     {
                         Serial.println ("Calibrating!");
-                        Motors.Set_Motor_Inputs (0.0, 0.0, 0.0, 0.0); // Just in case
                         Sensor_Data.calibrate_sensors (); // blink status led or something?
                             
-                        if (TEST_MOTORS)
-                        {
-                            Motors.Motor_Test ();
-                        }
+                        //if (TEST_MOTORS)
+                        //{
+                        //    Motors.Motor_Test ();
+                        //}
                         CALIBRATED = true;
                     }  
               }
@@ -169,6 +172,7 @@ void loop ()
     else // EMERGENCY!
     {
         Serial.println ("EMERGENCY!!");
+        Motors.Disable_Motors ();
         Motors.Set_Motor_Inputs (0.0, 0.0, 0.0, 0.0); // Do nothing
     }
 
