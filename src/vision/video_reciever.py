@@ -1,3 +1,4 @@
+# Summer: Implement new vision system. Use floodfill? (thanks Cameron!)
 import sys
 import os
 import cv2

@@ -1,3 +1,5 @@
+# Summer: Offput button latching to flight board
+# Summer: Hack apart the controller to remove spring
 import sys
 import os
 import threading

@@ -1,3 +1,4 @@
+// Summer: Clean motor class up
 #include <Arduino.h>
 #include "Motors.h"
 

@@ -17,6 +17,7 @@ class debugging:
 		if self.settings["Debug"]:
 			print "DEBUG = True"
 
+    # Summer: Not bad but could be improved
 	def print_d (self, msg):
 		if self.settings["Debug"]:
 			sys.stderr.write (str (msg) + "\n")

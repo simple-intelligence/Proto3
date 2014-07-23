@@ -34,7 +34,6 @@ void Logger::End_Line ()
     Serial.print ("\n");
 }
 
-
 void Logger::Set_Log_On ()
 {
     Logger_On = 1;

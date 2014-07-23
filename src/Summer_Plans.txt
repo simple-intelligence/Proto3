@@ -1,0 +1,22 @@
+ai/ai.py:# Summer: Get vision ai working
+communication/network_utils.py:# Summer: Investigate better ways for zmq to pass video
+communication/debug_utils.py:    # Summer: Not bad but could be improved
+communication/zmq_communicator.py:# Summer: Implement grand unified communications system
+communication/zmq_communicator.py:# Summer: Make settings file a .py?
+controller/ps_controller.py:# Summer: Offput button latching to flight board
+controller/ps_controller.py:# Summer: Hack apart the controller to remove spring
+libraries/Sensors/Sensors.cpp:// Summer: Simplify/rewrite sensor class
+libraries/Timer/Timer.cpp:// Summer: Implement me!
+libraries/PID/PID.cpp:// Summer: Implement different control sytem?
+libraries/Kalman/Kalman.cpp:// Summer: Figure this shit out
+libraries/Motors/Motors.cpp:// Summer: Clean motor class up
+libraries/Controller/Controller.cpp:// Summer: Implement button latching
+libraries/Complementary_Filter/Comp_Filter.cpp:// Summer: Find new filter?
+Proto3FlightBoard_II/Proto3FlightBoard_II.ino:// Summer: Offput settings to config file
+Proto3FlightBoard_II/Proto3FlightBoard_II.ino:// Summer: Implement timer class
+Proto3FlightBoard_II/Proto3FlightBoard_II.ino:// Summer: Implement orientation class
+Proto3FlightBoard_II/Proto3FlightBoard_II.ino:// Summer: Consider using own library for wire and servo stuff.
+Proto3FlightBoard_II/Proto3FlightBoard_II.ino:// Summer: Clean up style in all libraries
+Proto3FlightBoard_II/Proto3FlightBoard_II.ino:    // Summer: Is serial really the best way?
+Proto3FlightBoard_II/Proto3FlightBoard_II.ino:    // Summer: Write radio bypass.
+vision/video_reciever.py:# Summer: Implement new vision system. Use floodfill? (thanks Cameron!)

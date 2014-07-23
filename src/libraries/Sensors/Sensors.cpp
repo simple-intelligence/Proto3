@@ -1,3 +1,4 @@
+// Summer: Simplify/rewrite sensor class
 #include <Arduino.h>
 #include <Wire.h>
 

@@ -1,0 +1,9 @@
+1. Get IMU input over I2C(?) interface.
+2. Use Extended Kalman Filter(?) to denoise input
+3. Set up mock PID system without motor output
+4. Set up motor output
+
+Overall Architecture Plan:
+    Should be able to keep flight control portion of quad fairly seperate. Can use ZMQ to communicate controller/AI inputs.
+    Use controller inputs to modify PID setpoints? (Look up rate and attitude mode more)
+    Write flight control platform in C++/Arduino

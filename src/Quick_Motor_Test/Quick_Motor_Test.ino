@@ -1,3 +1,4 @@
+// Strap shit down when you do this
 #include <Servo.h> 
  
 Servo myservo0;
@@ -11,13 +12,13 @@ void setup()
 { 
     Serial.begin (9600);
     
-    myservo0.attach(3);
-    myservo1.attach(4);
-    myservo2.attach(5);
-    myservo3.attach(6);
+    myservo0.attach(2);
+    myservo1.attach(3);
+    myservo2.attach(4);
+    myservo3.attach(5);
     
-    pinMode (7, OUTPUT);
-    digitalWrite (7, HIGH);
+    pinMode (6, OUTPUT);
+    digitalWrite (6, HIGH);
 } 
  
  

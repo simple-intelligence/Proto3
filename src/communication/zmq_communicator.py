@@ -1,3 +1,5 @@
+# Summer: Implement grand unified communications system
+# Summer: Make settings file a .py?
 import sys
 import os
 import json

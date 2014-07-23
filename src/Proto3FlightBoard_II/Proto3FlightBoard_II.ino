@@ -1,4 +1,9 @@
 /* Proto Flight Board Version 2 */
+// Summer: Offput settings to config file
+// Summer: Implement timer class
+// Summer: Implement orientation class
+// Summer: Consider using own library for wire and servo stuff.
+// Summer: Clean up style in all libraries
 
 #include <Wire.h>
 #include <Servo.h>
@@ -59,6 +64,7 @@ void setup ()
 
 void loop ()
 {
+    // SUMMER: Get better range sensor
     Sensor_Data.read_sensors (IS_RANGE_ON); // No range yet
 
     // Raw angles
@@ -75,6 +81,8 @@ void loop ()
     Throttle_PID.compute (Sensor_Data.range);
 
     // TODO: Write diagram for this
+    // Summer: Is serial really the best way?
+    // Summer: Write radio bypass.
     Controls.Parse_Serial ();
     //Check_Emergency ();
     if (!EMERGENCY)

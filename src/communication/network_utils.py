@@ -1,3 +1,4 @@
+# Summer: Investigate better ways for zmq to pass video
 import sys
 import os
 import threading

@@ -1,3 +1,4 @@
+# Summer: Get vision ai working
 import sys
 import os
 import time
